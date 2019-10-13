@@ -36,18 +36,25 @@ pipeline {
 // Configuration à modifier
   stages {
     stage('Build') {
-      steps {
-        container('maven') {
-          sh 'mvn -B -DskipTests clean package'
-        }
-      }
-	}
-	stage('Test') {
-      steps {
-        container('maven') {
-          sh 'mvn test'
-        }
-      }
-    }
+      	steps {
+        	container('maven') {
+          	sh 'mvn -B -DskipTests clean package'
+        	}
+     		}
+		}
+    stage('Test') {
+       steps {
+       		container('maven') {
+          	sh 'mvn test'
+        	}
+      		}
+    		}
+    stage('Creation') {
+       steps {
+       		container('docker') {
+          	sh 'docker build -t my-app:$BUILD_NUMBER .'
+        	}
+      		}
+    		}
   }
 }
