@@ -36,6 +36,7 @@ pipeline {
 // Configuration à modifier
   stages {
     stage('Build') {
+    
       	steps {
         	container('maven') {
           	sh 'mvn -B -DskipTests clean package'
@@ -50,6 +51,12 @@ pipeline {
       		}
     		}
     stage('Creation') {
+    when {
+        anyOf {
+          branch 'master';
+          branch 'develop'
+        }
+      }
        steps {
        		container('docker') {
           	sh 'docker build -t my-app:$BUILD_NUMBER .'
@@ -57,6 +64,9 @@ pipeline {
       		}
     		}
     stage('Run') {
+       when {
+        branch 'master';
+      }
        steps {
        		container('docker') {
           	sh 'docker run my-app:$BUILD_NUMBER'
